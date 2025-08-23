@@ -31,14 +31,7 @@ Uthando is now a complete subscription-based relationship app with:
 ### 2. **Environment Variables**
 ```env
 # Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://alvtfpblnnokzgxnhtpp.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-# OpenAI
-OPENAI_API_KEY=sk-proj-...
-
-# Yoco (for webhook verification)
-YOCO_SECRET_KEY=sk_live_8eeaaed9W44MzQ53153464a8ed05
 ```
 
 ### 3. **Vercel Deployment**

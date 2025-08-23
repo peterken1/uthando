@@ -162,3 +162,5 @@ upload/
 *.backup
 *~
 
+
+.vercel
