@@ -30,7 +30,7 @@ This guide will help you deploy the Uthando app to Vercel.
    - Add the following:
      ```
      Name: OPENAI_API_KEY
-     Value: your_openai_api_key_here
+    
      ```
    - Make sure it's available for all environments (Production, Preview, Development)
 
