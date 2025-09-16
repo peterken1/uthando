@@ -6,7 +6,7 @@ import AuthModal from './auth/AuthModal';
 import PremiumUpgrade from './PremiumUpgrade';
 
 export default function UserMenu() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, refreshProfile } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -95,6 +95,17 @@ export default function UserMenu() {
                   Admin Dashboard
                 </button>
               )}
+
+              <button
+                onClick={async () => {
+                  await refreshProfile();
+                  setShowUserMenu(false);
+                }}
+                className="w-full flex items-center px-3 py-2 text-sm text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+              >
+                <Settings className="w-4 h-4 mr-3" />
+                Refresh Profile
+              </button>
 
               <button
                 onClick={() => setShowUserMenu(false)}

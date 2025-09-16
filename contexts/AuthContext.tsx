@@ -25,9 +25,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, full_name, credits, premium_until, is_admin, created_at, updated_at')
         .eq('id', userId)
         .single();
 
@@ -36,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return null;
       }
 
+      console.log('Fetched profile data:', data);
       return data;
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -55,11 +57,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         fetchProfile(session.user.id).then(setProfile);
       }
-      
+
       setLoading(false);
     });
 
@@ -68,14 +70,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         if (session?.user) {
           const profileData = await fetchProfile(session.user.id);
           setProfile(profileData);
         } else {
           setProfile(null);
         }
-        
+
         setLoading(false);
       }
     );
@@ -107,9 +109,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error signing out:', error);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Error signing out:', error);
+        throw error;
+      }
+
+      // Clear local state immediately
+      setUser(null);
+      setProfile(null);
+      setSession(null);
+
+      // Force page reload to clear any cached data
+      window.location.reload();
+    } catch (error) {
+      console.error('Sign out failed:', error);
+      // Force reload even if there's an error
+      window.location.reload();
     }
   };
 
