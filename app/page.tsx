@@ -21,13 +21,29 @@ export default function HomePage() {
             <button
               onClick={async () => {
                 const { supabase } = await import('@/lib/supabase');
-                const { data, error } = await supabase
+
+                // Test 1: Check if profile exists
+                const { data: profile, error: profileError } = await supabase
                   .from('profiles')
                   .select('*')
                   .eq('id', 'aecd5e10-7287-4d7a-a48a-a07e73a7f152')
                   .single();
-                console.log('Direct DB query result:', { data, error });
-                alert(`Credits: ${data?.credits}, Admin: ${data?.is_admin}`);
+
+                console.log('Profile query:', { profile, profileError });
+
+                // Test 2: Check table structure
+                const { data: allProfiles, error: allError } = await supabase
+                  .from('profiles')
+                  .select('*')
+                  .limit(1);
+
+                console.log('Table structure:', { allProfiles, allError });
+
+                if (profileError) {
+                  alert(`Error: ${profileError.message}`);
+                } else {
+                  alert(`Credits: ${profile?.credits}, Admin: ${profile?.is_admin}, Email: ${profile?.email}`);
+                }
               }}
               className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm"
             >
