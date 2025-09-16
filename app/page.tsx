@@ -1,11 +1,13 @@
 "use client";
 import React from "react";
 import LoveNoteGenerator from "@/components/LoveNoteGenerator";
+import UserDebugInfo from "@/components/UserDebugInfo";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-pink-50 text-gray-900 px-4 py-6 sm:px-6 sm:py-8 md:px-10">
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto space-y-4">
+        <UserDebugInfo />
         <LoveNoteGenerator />
       </div>
     </main>

@@ -19,11 +19,16 @@ export async function POST(req: NextRequest) {
     // Check if user has premium access or enough credits
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('credits, premium_until')
+      .select('credits, premium_until, is_admin')
       .eq('id', userId)
       .single();
 
-    if (profileError || !profile) {
+    if (profileError) {
+      console.error('Profile error:', profileError);
+      return NextResponse.json({ error: 'Database error: ' + profileError.message }, { status: 500 });
+    }
+
+    if (!profile) {
       return NextResponse.json({ error: 'User profile not found.' }, { status: 404 });
     }
 
@@ -44,7 +49,11 @@ export async function POST(req: NextRequest) {
       temperature: 0.8,
     });
 
-    const note = response.choices[0].message.content;
+    const note = response.choices[0]?.message?.content;
+
+    if (!note) {
+      throw new Error('No response from OpenAI');
+    }
 
     // Deduct credits if not premium
     if (!isPremium) {
