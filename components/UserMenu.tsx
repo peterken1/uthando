@@ -83,6 +83,19 @@ export default function UserMenu() {
                 </button>
               )}
 
+              {profile?.is_admin && (
+                <button
+                  onClick={() => {
+                    window.location.href = '/admin';
+                    setShowUserMenu(false);
+                  }}
+                  className="w-full flex items-center px-3 py-2 text-sm text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
+                >
+                  <Settings className="w-4 h-4 mr-3" />
+                  Admin Dashboard
+                </button>
+              )}
+
               <button
                 onClick={() => setShowUserMenu(false)}
                 className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"

@@ -12,6 +12,7 @@ export interface Profile {
   full_name: string | null
   credits: number
   premium_until: string | null
+  is_admin: boolean
   created_at: string
   updated_at: string
 }
