@@ -116,9 +116,16 @@ export default function UserMenu() {
               </button>
 
               <button
-                onClick={() => {
-                  signOut();
-                  setShowUserMenu(false);
+                onClick={async () => {
+                  try {
+                    setShowUserMenu(false);
+                    console.log('Attempting to sign out...');
+                    await signOut();
+                  } catch (error) {
+                    console.error('Sign out error:', error);
+                    // Force reload even if sign out fails
+                    window.location.href = '/';
+                  }
                 }}
                 className="w-full flex items-center px-3 py-2 text-sm text-red-700 hover:bg-red-50 rounded-lg transition-colors"
               >

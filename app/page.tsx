@@ -49,6 +49,29 @@ export default function HomePage() {
             >
               🔍 Test DB Direct
             </button>
+            <button
+              onClick={async () => {
+                try {
+                  console.log('Manual sign out clicked');
+                  const { supabase } = await import('@/lib/supabase');
+                  const { error } = await supabase.auth.signOut();
+                  if (error) {
+                    console.error('Supabase sign out error:', error);
+                  }
+                  // Clear localStorage
+                  localStorage.clear();
+                  // Force reload
+                  window.location.href = '/';
+                } catch (error) {
+                  console.error('Manual sign out error:', error);
+                  // Force reload anyway
+                  window.location.href = '/';
+                }
+              }}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
+            >
+              🚪 Force Sign Out
+            </button>
           </div>
           <p className="text-xs text-blue-700">
             Credits: R{profile?.credits?.toFixed(2) || '0.00'} | Admin: {profile?.is_admin ? 'Yes' : 'No'}
