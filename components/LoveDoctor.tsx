@@ -7,6 +7,7 @@ import CreditBalance from './CreditBalance';
 import PremiumUpgrade from './PremiumUpgrade';
 import UserMenu from './UserMenu';
 import PaymentStatus from './PaymentStatus';
+import FeatureNavigation from './FeatureNavigation';
 
 interface Message {
   id: string;
@@ -85,7 +86,7 @@ export default function LoveDoctor() {
       const response = await fetch("/api/love-doctor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           message: inputText.trim(),
           quizResults: quizResults,
           conversationHistory: messages.slice(-5), // Send last 5 messages for context
@@ -98,7 +99,7 @@ export default function LoveDoctor() {
       }
 
       const data = await response.json();
-      
+
       if (data.error) {
         throw new Error(data.error);
       }
@@ -111,7 +112,7 @@ export default function LoveDoctor() {
       };
 
       setMessages(prev => [...prev, aiMessage]);
-      
+
       // Refresh profile to update credits
       await refreshProfile();
     } catch (err) {
@@ -142,7 +143,7 @@ export default function LoveDoctor() {
   return (
     <div className="min-h-screen bg-pink-50 flex flex-col">
       <PaymentStatus />
-      
+
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-pink-100 px-4 py-3">
         <div className="max-w-md mx-auto flex items-center justify-between">
@@ -174,6 +175,16 @@ export default function LoveDoctor() {
         </div>
       )}
 
+      {/* Feature Navigation */}
+      <div className="px-4 py-3">
+        <div className="max-w-md mx-auto">
+          <FeatureNavigation
+            currentFeature="doctor"
+            onAuthRequired={() => setShowAuthModal(true)}
+          />
+        </div>
+      </div>
+
       {error && (
         <div className="px-4 py-2">
           <div className="max-w-md mx-auto p-3 bg-red-50 border border-red-200 rounded-lg flex items-center text-red-700 text-sm">
@@ -203,25 +214,23 @@ export default function LoveDoctor() {
               className={`flex ${message.isUser ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                  message.isUser
-                    ? "bg-pink-500 text-white"
-                    : "bg-white text-gray-800 shadow-sm border border-pink-100"
-                }`}
+                className={`max-w-[80%] rounded-2xl px-4 py-3 ${message.isUser
+                  ? "bg-pink-500 text-white"
+                  : "bg-white text-gray-800 shadow-sm border border-pink-100"
+                  }`}
               >
                 <p className="text-sm whitespace-pre-wrap">{message.text}</p>
-                <p className={`text-xs mt-1 ${
-                  message.isUser ? "text-pink-100" : "text-gray-500"
-                }`}>
-                  {message.timestamp.toLocaleTimeString([], { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
+                <p className={`text-xs mt-1 ${message.isUser ? "text-pink-100" : "text-gray-500"
+                  }`}>
+                  {message.timestamp.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
                   })}
                 </p>
               </div>
             </div>
           ))}
-          
+
           {loading && (
             <div className="flex justify-start">
               <div className="bg-white text-gray-800 shadow-sm border border-pink-100 rounded-2xl px-4 py-3">
@@ -232,7 +241,7 @@ export default function LoveDoctor() {
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -260,7 +269,7 @@ export default function LoveDoctor() {
               <Send className="w-5 h-5" />
             </button>
           </div>
-          
+
           {user && (
             <p className="text-xs text-gray-500 mt-2 text-center">
               {profile?.premium_until && new Date(profile.premium_until) > new Date()
@@ -269,7 +278,7 @@ export default function LoveDoctor() {
               }
             </p>
           )}
-          
+
           {!quizResults && user && (
             <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
               <p className="text-sm text-purple-700 mb-2">

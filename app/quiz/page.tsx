@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import LoveLanguageQuiz from "@/components/LoveLanguageQuiz";
+import LoveLanguageQuizNew from "@/components/LoveLanguageQuizNew";
 
 export default function QuizPage() {
-  return <LoveLanguageQuiz />;
+  return <LoveLanguageQuizNew />;
 }

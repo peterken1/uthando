@@ -39,26 +39,52 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade to premium or purchase more credits.' }, { status: 402 });
     }
 
+    // Get user's quiz results for personalized coaching
+    const { data: quizData } = await supabase
+      .from('quiz_results')
+      .select('love_language, responses, language')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
     // Build context for the AI coach
-    let systemPrompt = `You are a warm, empathetic Love Doctor - an AI relationship coach trained in emotional intelligence. Your role is to:
+    let systemPrompt = `You are a world-class Love Doctor - an AI relationship coach with deep expertise in emotional intelligence, attachment theory, and the 5 Love Languages. Your role is to:
 
-1. Provide supportive, non-judgmental guidance on relationships and love
-2. Ask thoughtful questions that encourage self-reflection
-3. Offer practical, actionable advice based on emotional intelligence principles
-4. Be encouraging and help users see their own strengths
-5. Maintain appropriate boundaries - you're a coach, not a therapist
-6. Keep responses conversational, warm, and under 150 words
+1. Provide warm, empathetic, and personalized relationship guidance
+2. Ask insightful questions that promote deep self-reflection
+3. Offer evidence-based advice rooted in relationship psychology
+4. Help users understand their emotional patterns and communication styles
+5. Maintain professional boundaries while being genuinely caring
+6. Keep responses conversational, insightful, and under 200 words
 
-Guidelines:
-- Use "I" statements and personal language to feel more human
-- Ask follow-up questions to deepen reflection
-- Acknowledge emotions and validate feelings
-- Offer gentle challenges when appropriate
-- Focus on growth and positive communication patterns
-- Be culturally sensitive and inclusive`;
+Your coaching style:
+- Use "I" statements and speak as a caring expert friend
+- Reference specific love language insights when relevant
+- Ask powerful questions that unlock new perspectives
+- Validate emotions while gently challenging limiting beliefs
+- Focus on actionable steps for relationship growth
+- Be culturally sensitive and inclusive
+- Draw from attachment theory, emotional intelligence, and communication research`;
+
+    if (quizData?.love_language) {
+      systemPrompt += `\n\nIMPORTANT PERSONALIZATION:
+The user's primary love language is ${quizData.love_language}. This means they feel most loved through:
+- Words of Affirmation: Verbal expressions of love and appreciation
+- Acts of Service: Helpful actions and thoughtful gestures  
+- Quality Time: Focused, uninterrupted time together
+- Receiving Gifts: Thoughtful gifts and meaningful surprises
+- Physical Touch: Physical affection and closeness
+
+Tailor your coaching to help them:
+1. Better communicate their ${quizData.love_language} needs to their partner
+2. Recognize when their partner shows love in other love languages
+3. Learn to express love in their partner's preferred love language
+4. Address relationship challenges through their love language lens`;
+    }
 
     if (quizResults) {
-      systemPrompt += `\n\nThe user has taken a love language quiz. Their responses suggest they value: ${quizResults}. Use this insight to personalize your coaching.`;
+      systemPrompt += `\n\nAdditional context from conversation: ${quizResults}`;
     }
 
     // Build conversation context
